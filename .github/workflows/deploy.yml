@@ -1,0 +1,46 @@
+name: Deploy to Staging
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  deploy-staging:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Train model
+        run: |
+          python src/train.py
+
+      - name: Evaluate model
+        run: |
+          python src/evaluate.py
+
+      - name: Prepare staging deployment
+        run: |
+          mkdir -p staging
+          cp models/iris_model.joblib staging/
+          cp src/evaluate.py staging/
+          cp src/preprocess.py staging/
+          echo "Staging deployment completed for tag $GITHUB_REF_NAME" > staging/deployment.txt
+
+      - name: Upload staging deployment
+        uses: actions/upload-artifact@v4
+        with:
+          name: staging-deployment-${{ github.ref_name }}
+          path: staging/
