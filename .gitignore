@@ -1,6 +1,23 @@
-.venv/
+# Python
 __pycache__/
-*.pyc
-.pytest_cache/
-.flake8
-models/*.joblib
+*.py[cod]
+
+# Virtual environments
+.venv/
+venv/
+
+# Airflow local environment
+airflow-local/.env
+airflow-local/logs/
+airflow-local/dags/__pycache__/
+
+# Airflow generated files
+airflow-local/airflow.db
+airflow-local/webserver_config.py
+
+# ML generated artifacts
+airflow-local/models/
+airflow-local/staging/
+airflow-local/data/
+
+models/
