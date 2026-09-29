@@ -1,0 +1,38 @@
+name: Train ML Model
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  train-model:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Train model
+        run: |
+          python src/train.py
+
+      - name: Evaluate model
+        run: |
+          python src/evaluate.py
+
+      - name: Upload trained model
+        uses: actions/upload-artifact@v4
+        with:
+          name: iris-trained-model
+          path: models/iris_model.joblib
